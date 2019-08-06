@@ -13,6 +13,8 @@ val jvmTarget = "1.8"
 plugins {
     kotlin("jvm") version "1.3.50-eap-54"
     id("com.github.ben-manes.versions") version "0.21.0"
+    id("com.bmuschko.nexus") version "2.3.1"
+    id("io.codearte.nexus-staging") version "0.21.0"
 }
 
 repositories {
@@ -31,4 +33,10 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = jvmTarget
     kotlinOptions.freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental")
+}
+
+nexus {
+}
+
+nexusStaging {
 }
