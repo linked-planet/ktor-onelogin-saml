@@ -36,6 +36,14 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental")
 }
 
+publishing {
+    publications {
+        register("mavenJava", MavenPublication::class) {
+            from(components["kotlin"])
+        }
+    }
+}
+
 nexus {
 }
 
