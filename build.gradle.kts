@@ -15,6 +15,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.21.0"
     id("com.bmuschko.nexus") version "2.3.1"
     id("io.codearte.nexus-staging") version "0.21.0"
+    `maven-publish`
 }
 
 repositories {
