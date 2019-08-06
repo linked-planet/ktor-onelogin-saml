@@ -1,6 +1,6 @@
 # ktor-onelogin-saml
 Integrates [ktor](ktor.io) with onelogin's
-[https://github.com/onelogin/java-saml](java-saml) library.
+[java-saml](https://github.com/onelogin/java-saml) library.
 
 
 ## Limitations
@@ -18,7 +18,7 @@ strong uptime requirements.
 
 
 ## Configuration
-Please refer to [src/main/resources/reference.conf](reference.conf).
+Please refer to [reference.conf](src/main/resources/reference.conf).
 
 
 ## General Usage
@@ -110,10 +110,10 @@ post<AttributeConsumerService> {
 
 
 ## Background & Alternatives
-- [https://wiki.shibboleth.net/confluence/display/OpenSAML/Home](OpenSAML)
+- [OpenSAML](https://wiki.shibboleth.net/confluence/display/OpenSAML/Home)
   reached end of life.
 - Custom implementation of Auth on top of
-  [https://github.com/onelogin/java-saml/tree/master/core](java-saml) is
+  [java-saml](https://github.com/onelogin/java-saml/tree/master/core) is
   what should be done. But it is quite some work.
 - Please see https://github.com/ktorio/ktor/issues/1212 for more
 details.
