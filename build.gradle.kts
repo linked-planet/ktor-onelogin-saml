@@ -1,6 +1,5 @@
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.time.Year
 
 println("Gradle Version: " + GradleVersion.current().toString())
 
@@ -13,7 +12,6 @@ val jvmTarget = "1.8"
 
 plugins {
     kotlin("jvm") version "1.3.50-eap-54"
-    id("com.github.hierynomus.license") version "0.15.0"
     id("com.github.ben-manes.versions") version "0.21.0"
 }
 
@@ -33,10 +31,4 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = jvmTarget
     kotlinOptions.freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental")
-}
-
-license {
-    ext.set("year", Year.now().value)
-    ext.set("name", "link-time GmbH")
-    header = rootProject.file("HEADER")
 }
