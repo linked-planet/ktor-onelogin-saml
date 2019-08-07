@@ -114,7 +114,6 @@ tasks {
     register("dokkaJavadoc", DokkaTask::class) {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/javadoc"
-        sourceDirs = files(sourceSets.map { it.allSource })
     }
     register("javadocJar", Jar::class) {
         dependsOn("dokkaJavadoc")
@@ -123,6 +122,6 @@ tasks {
     }
     register("sourcesJar", Jar::class) {
         classifier = "sources"
-        from(sourceSets.main.map { it.allSource })
+        from("src/main/kotlin")
     }
 }
