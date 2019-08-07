@@ -38,14 +38,48 @@ tasks.withType<KotlinCompile> {
 
 publishing {
     publications {
-        register("mavenJava", MavenPublication::class) {
+        register("mavenJava", MavenPublication::class.java) {
             from(components["kotlin"])
         }
     }
 }
 
-nexus {
-}
-
-nexusStaging {
+tasks {
+    getByName<Upload>("uploadArchives") {
+        repositories {
+            withConvention(MavenRepositoryHandlerConvention::class) {
+                mavenDeployer {
+                    pom.project {
+                        withGroovyBuilder {
+                            "name"("Ktor OneLogin SAML Integration")
+                            "description"("Integrates Ktor with OneLogin java-saml library.")
+                            "url"("https://github.com/link-time/ktor-onelogin-saml")
+                            "inceptionYear"("2019")
+                            "licenses" {
+                                "license" {
+                                    "name"("The Apache Software License, Version 2.0")
+                                    "url"("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                                    "distribution"("repo")
+                                }
+                            }
+                            "developers" {
+                                "developer" {
+                                    "name"("Alexander Weickmann")
+                                    "email"("alexander.weickmann@gmail.com")
+                                    "url"("https://github.com/weickmanna")
+                                    "organization"("link-time GmbH")
+                                    "organizationUrl"("https://link-time.com")
+                                }
+                            }
+                            "scm" {
+                                "url"("https://github.com/link-time/ktor-onelogin-saml.git")
+                                "connection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
+                                "developerConnection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
