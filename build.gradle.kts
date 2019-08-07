@@ -103,7 +103,7 @@ modifyPom(closureOf<MavenPom> {
 })
 
 extraArchive {
-    sources = false
+    sources = true
     tests = false
-    javadoc = false
+    javadoc = true
 }
