@@ -1,6 +1,7 @@
 import groovy.lang.Closure
 import nu.studer.gradle.credentials.domain.CredentialsContainer
 import org.gradle.util.GradleVersion
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // print gradle version as we might run on different machines as well as in the cloud
@@ -15,11 +16,13 @@ val jvmTarget = "1.8"
 
 plugins {
     kotlin("jvm") version "1.3.50-eap-54"
+    id("org.jetbrains.dokka") version "0.9.18"
     id("com.github.ben-manes.versions") version "0.21.0"
     id("com.bmuschko.nexus") version "2.3.1"
     id("io.codearte.nexus-staging") version "0.21.0"
     id("nu.studer.credentials") version "1.0.7"
     `maven-publish`
+    java
 }
 
 repositories {
@@ -105,5 +108,15 @@ modifyPom(closureOf<MavenPom> {
 extraArchive {
     sources = true
     tests = false
-    javadoc = true
+    javadoc = false
+}
+
+tasks.withType<DokkaTask> {
+    outputFormat = "javadoc"
+    outputDirectory = "$buildDir/javadoc"
+}
+
+tasks.withType<Jar> {
+    classifier = "javadoc"
+    from("$buildDir/javadoc")
 }
