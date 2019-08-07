@@ -1,6 +1,9 @@
+import groovy.lang.Closure
+import nu.studer.gradle.credentials.domain.CredentialsContainer
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+// print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
 
 group = "com.link-time.ktor"
@@ -15,6 +18,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.21.0"
     id("com.bmuschko.nexus") version "2.3.1"
     id("io.codearte.nexus-staging") version "0.21.0"
+    id("nu.studer.credentials") version "1.0.7"
     `maven-publish`
 }
 
@@ -36,6 +40,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental")
 }
 
+// ability to publish artifact to maven local
 publishing {
     publications {
         register("mavenJava", MavenPublication::class.java) {
@@ -44,42 +49,53 @@ publishing {
     }
 }
 
-tasks {
-    getByName<Upload>("uploadArchives") {
-        repositories {
-            withConvention(MavenRepositoryHandlerConvention::class) {
-                mavenDeployer {
-                    pom.project {
-                        withGroovyBuilder {
-                            "name"("Ktor OneLogin SAML Integration")
-                            "description"("Integrates Ktor with OneLogin java-saml library.")
-                            "url"("https://github.com/link-time/ktor-onelogin-saml")
-                            "inceptionYear"("2019")
-                            "licenses" {
-                                "license" {
-                                    "name"("The Apache Software License, Version 2.0")
-                                    "url"("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                                    "distribution"("repo")
-                                }
-                            }
-                            "developers" {
-                                "developer" {
-                                    "name"("Alexander Weickmann")
-                                    "email"("alexander.weickmann@gmail.com")
-                                    "url"("https://github.com/weickmanna")
-                                    "organization"("link-time GmbH")
-                                    "organizationUrl"("https://link-time.com")
-                                }
-                            }
-                            "scm" {
-                                "url"("https://github.com/link-time/ktor-onelogin-saml.git")
-                                "connection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
-                                "developerConnection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
-                            }
-                        }
-                    }
-                }
-            }
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it is Sign }) {
+        // signing password obtained via gradle credentials plugin
+        val credentials: CredentialsContainer by ext
+        allprojects {
+            extra["signing.password"] = credentials.getProperty("signingPassword")
+        }
+    }
+    if (allTasks.any { it.name == "uploadArchives" || it.name == "closeAndReleaseRepository" }) {
+        // nexus publishing password obtained via gradle credentials plugin
+        val credentials: CredentialsContainer by ext
+        allprojects {
+            extra["nexusPassword"] = credentials.getProperty("nexusToken")
         }
     }
 }
+
+// add pom metadata needed for publishing to maven central
+val modifyPom: Closure<MavenPom> by ext
+modifyPom(closureOf<MavenPom> {
+    project {
+        withGroovyBuilder {
+            "name"("Ktor OneLogin SAML Integration")
+            "description"("Integrates Ktor with OneLogin java-saml library.")
+            "url"("https://github.com/link-time/ktor-onelogin-saml")
+            "inceptionYear"("2019")
+            "licenses" {
+                "license" {
+                    "name"("The Apache Software License, Version 2.0")
+                    "url"("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    "distribution"("repo")
+                }
+            }
+            "developers" {
+                "developer" {
+                    "name"("Alexander Weickmann")
+                    "email"("alexander.weickmann@gmail.com")
+                    "url"("https://github.com/weickmanna")
+                    "organization"("link-time GmbH")
+                    "organizationUrl"("https://link-time.com")
+                }
+            }
+            "scm" {
+                "url"("https://github.com/link-time/ktor-onelogin-saml.git")
+                "connection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
+                "developerConnection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
+            }
+        }
+    }
+})
