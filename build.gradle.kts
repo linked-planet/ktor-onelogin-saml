@@ -57,7 +57,9 @@ gradle.taskGraph.whenReady {
             extra["signing.password"] = credentials.getProperty("signingPassword")
         }
     }
-    if (allTasks.any { it.name == "uploadArchives" || it.name == "closeAndReleaseRepository" }) {
+    if (allTasks.any {
+                it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
+            }) {
         // nexus publishing password obtained via gradle credentials plugin
         val credentials: CredentialsContainer by ext
         allprojects {
