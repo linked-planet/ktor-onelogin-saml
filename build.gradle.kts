@@ -22,7 +22,6 @@ plugins {
     id("io.codearte.nexus-staging") version "0.21.0"
     id("nu.studer.credentials") version "1.0.7"
     `maven-publish`
-    java
 }
 
 repositories {
@@ -106,17 +105,24 @@ modifyPom(closureOf<MavenPom> {
 })
 
 extraArchive {
-    sources = true
+    sources = false
     tests = false
     javadoc = false
 }
 
-tasks.withType<DokkaTask> {
-    outputFormat = "javadoc"
-    outputDirectory = "$buildDir/javadoc"
-}
-
-tasks.withType<Jar> {
-    classifier = "javadoc"
-    from("$buildDir/javadoc")
+tasks {
+    register("dokkaJavadoc", DokkaTask::class) {
+        outputFormat = "javadoc"
+        outputDirectory = "$buildDir/javadoc"
+        sourceDirs = files(sourceSets.map { it.allSource })
+    }
+    register("javadocJar", Jar::class) {
+        dependsOn("dokkaJavadoc")
+        classifier = "javadoc"
+        from("$buildDir/javadoc")
+    }
+    register("sourcesJar", Jar::class) {
+        classifier = "sources"
+        from(sourceSets.main.map { it.allSource })
+    }
 }
