@@ -99,3 +99,9 @@ modifyPom(closureOf<MavenPom> {
         }
     }
 })
+
+extraArchive {
+    sources = false
+    tests = false
+    javadoc = false
+}
