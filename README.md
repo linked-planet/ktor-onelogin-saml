@@ -1,5 +1,6 @@
 # ktor-onelogin-saml
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.link-time/ktor-onelogin-saml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.link-time/ktor-onelogin-saml)
 [![Build Status](https://travis-ci.org/link-time/ktor-onelogin-saml.svg?branch=master)](https://travis-ci.org/link-time/ktor-onelogin-saml)
 [![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 
