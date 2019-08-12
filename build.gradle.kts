@@ -51,9 +51,9 @@ publishing {
     }
 }
 
+// obtain passwords from gradle credentials plugin
 gradle.taskGraph.whenReady {
     if (allTasks.any { it is Sign }) {
-        // signing password obtained via gradle credentials plugin
         val credentials: CredentialsContainer by ext
         allprojects {
             extra["signing.password"] = credentials.getProperty("signingPassword")
@@ -62,7 +62,6 @@ gradle.taskGraph.whenReady {
     if (allTasks.any {
                 it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
             }) {
-        // nexus publishing password obtained via gradle credentials plugin
         val credentials: CredentialsContainer by ext
         allprojects {
             extra["nexusPassword"] = credentials.getProperty("nexusToken")
@@ -104,6 +103,7 @@ modifyPom(closureOf<MavenPom> {
     }
 })
 
+// disable archives set by nexus plugin, since we use Kotlin we have to create our own ones
 extraArchive {
     sources = false
     tests = false
