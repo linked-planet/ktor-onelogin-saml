@@ -1,7 +1,7 @@
 # ktor-onelogin-saml
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.link-time.ktor/ktor-onelogin-saml.svg?label=maven%20central)](https://search.maven.org/search?q=g:%22com.link-time.ktor%22%20AND%20a:%22ktor-onelogin-saml%22)
-[![Build Status](https://travis-ci.org/link-time/ktor-onelogin-saml.svg?branch=master)](https://travis-ci.org/link-time/ktor-onelogin-saml)
+[![Build Status](https://travis-ci.org/link-time/ktor-onelogin-saml.svg?branch=master)](https://travis-ci.com/link-time/ktor-onelogin-saml)
 [![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 
 Integrates [ktor](ktor.io) with onelogin's
