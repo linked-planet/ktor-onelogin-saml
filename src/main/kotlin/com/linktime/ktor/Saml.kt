@@ -31,10 +31,19 @@ import io.ktor.server.engine.EngineAPI
 import io.ktor.server.servlet.AsyncServletApplicationCall
 import io.ktor.server.servlet.ServletApplicationResponse
 import io.ktor.util.pipeline.PipelineContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.eclipse.jetty.server.Request
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+suspend fun PipelineContext<Unit, ApplicationCall>.redirectToIdentityProvider() {
+    withSAMLAuth { auth ->
+        withContext(Dispatchers.IO) {
+            auth.login()
+        }
+    }
+}
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withSAMLAuth(handler: suspend (Auth) -> Unit) {
     val auth = Auth(SamlConfig.saml2Settings, call.getServletRequest(), call.getServletResponse())
