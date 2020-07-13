@@ -16,7 +16,7 @@ val jvmTarget = "1.8"
 
 plugins {
     kotlin("jvm") version "1.3.72"
-    id("org.jetbrains.dokka") version "0.9.18"
+    id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("com.bmuschko.nexus") version "2.3.1"
     id("io.codearte.nexus-staging") version "0.21.2"
@@ -114,7 +114,7 @@ tasks {
     register("dokkaJavadoc", DokkaTask::class) {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/javadoc"
-        reportUndocumented = false
+        configuration.reportUndocumented = false
     }
     register("javadocJar", Jar::class) {
         dependsOn("dokkaJavadoc")
