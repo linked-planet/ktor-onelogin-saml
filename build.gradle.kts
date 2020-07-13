@@ -17,10 +17,10 @@ val jvmTarget = "1.8"
 plugins {
     kotlin("jvm") version "1.3.72"
     id("org.jetbrains.dokka") version "0.9.18"
-    id("com.github.ben-manes.versions") version "0.21.0"
+    id("com.github.ben-manes.versions") version "0.28.0"
     id("com.bmuschko.nexus") version "2.3.1"
-    id("io.codearte.nexus-staging") version "0.21.0"
-    id("nu.studer.credentials") version "1.0.7"
+    id("io.codearte.nexus-staging") version "0.21.2"
+    id("nu.studer.credentials") version "2.1"
     `maven-publish`
 }
 
