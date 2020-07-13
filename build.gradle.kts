@@ -10,12 +10,12 @@ println("Gradle Version: " + GradleVersion.current().toString())
 group = "com.link-time.ktor"
 version = "1.2.0-SNAPSHOT"
 
-val kotlinVersion = "1.3.50-eap-54"
-val ktorVersion = "1.1.3"
+val kotlinVersion = "1.3.72"
+val ktorVersion = "1.2.3"
 val jvmTarget = "1.8"
 
 plugins {
-    kotlin("jvm") version "1.3.50-eap-54"
+    kotlin("jvm") version "1.3.72"
     id("org.jetbrains.dokka") version "0.9.18"
     id("com.github.ben-manes.versions") version "0.21.0"
     id("com.bmuschko.nexus") version "2.3.1"
@@ -118,11 +118,11 @@ tasks {
     }
     register("javadocJar", Jar::class) {
         dependsOn("dokkaJavadoc")
-        classifier = "javadoc"
+        archiveClassifier.set("javadoc")
         from("$buildDir/javadoc")
     }
     register("sourcesJar", Jar::class) {
-        classifier = "sources"
+        archiveClassifier.set("sources")
         from("src/main/kotlin")
     }
 }

@@ -41,7 +41,7 @@ suspend fun PipelineContext<Unit, ApplicationCall>.withSAMLAuth(handler: suspend
     handler(auth)
 }
 
-@UseExperimental(EngineAPI::class)
+@OptIn(EngineAPI::class)
 fun ApplicationCall.getServletRequest(): HttpServletRequest {
     val servletRequest = getAsyncServletApplicationCall().request.servletRequest
     // when running behind proxy with ssl offloading, the request must be customized to use the original scheme
@@ -50,7 +50,7 @@ fun ApplicationCall.getServletRequest(): HttpServletRequest {
     return servletRequest
 }
 
-@UseExperimental(EngineAPI::class)
+@OptIn(EngineAPI::class)
 fun ApplicationCall.getServletResponse(): HttpServletResponse {
     val servletApplicationResponse = getAsyncServletApplicationCall().response
     val responseField = ServletApplicationResponse::class.java.getDeclaredField("servletResponse")
@@ -58,7 +58,7 @@ fun ApplicationCall.getServletResponse(): HttpServletResponse {
     return responseField.get(servletApplicationResponse) as HttpServletResponse
 }
 
-@UseExperimental(EngineAPI::class)
+@OptIn(EngineAPI::class)
 private fun ApplicationCall.getAsyncServletApplicationCall(): AsyncServletApplicationCall {
     val routingApplicationCall = (request.call as RoutingApplicationCall)
     val callField = RoutingApplicationCall::class.java.getDeclaredField("call")
