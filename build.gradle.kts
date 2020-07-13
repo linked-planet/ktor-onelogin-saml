@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 println("Gradle Version: " + GradleVersion.current().toString())
 
 group = "com.link-time.ktor"
-version = "1.2.0-SNAPSHOT"
+version = "1.2.0-ktor-1.2.3"
 
 val kotlinVersion = "1.3.72"
 val ktorVersion = "1.2.3"
