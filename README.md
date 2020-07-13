@@ -16,6 +16,7 @@ on themselves:
 - Breaks ktor public API using reflection, which could lead to
   errors if using a more recent ktor version than this library.
   You might need to fix it yourself. Pull requests are welcome ;-)
+- Ties your app to a particular version of ktor
 
 There are no automated integration tests but the code is used
 productively in at least one business-critical application with
@@ -26,7 +27,43 @@ strong uptime requirements.
 Please refer to [reference.conf](src/main/resources/reference.conf).
 
 
-## General Usage
+## Usage
+
+### Basic Installation
+#### 1) Instantiate SAML route in routes configuration:
+
+```kotlin
+routing {
+   saml<Session>(
+        AppConfig.samlEnabled,
+        // lambda to add custom authorization logic after successful authentication
+        authorizer = {_ -> true},
+        // create session object after authentication + authorization are successful
+        createSession = { name -> Session(name) })
+}
+```
+
+#### 2) Redirect users with no session to identity provider
+
+in index route:
+```kotlin
+// if the user does not have a session and saml-sso is enabled, we redirect the user to the identity provider
+if (session == null && ssoEnabled) {
+    redirectToIdentityProvider()
+}
+``` 
+
+
+### Advanced Usage
+We declared all components of the library public, so you can build the
+behavior you need by yourself if the basic installation is not sufficient
+for you.
+
+You could even opt to not use the predefined SamlRoute at all and build
+a custom one from scratch. However, please also consider the alternative
+of filing a pull request to make the route provided by this library more
+configurable.
+
 Within your route, you can use `withSAMLAuth` to get a fully configured
 SAML Auth object.
 
@@ -36,7 +73,7 @@ withSAMLAuth { auth ->
 }
 ```
 
-Some of the Auth methods are implemented in a blocking way. To handle
+Some Auth methods are implemented in a blocking way. To handle
 this, use IO dispatcher context:
 
 ```kotlin
@@ -45,70 +82,7 @@ import kotlinx.coroutines.withContext
 
 withSAMLAuth { auth ->
     withContext(Dispatchers.IO) {
-        auth.login(targetUrl)
-    }
-}
-```
-
-
-## Error Handling
-It is recommended to define error handler functions based on the provided
-`requireValid` functions:
-
-```kotlin
-suspend fun PipelineContext<Unit, ApplicationCall>.requireValid(
-    errors: List<String>, handler: suspend () -> Unit) {
-    requireValid(errors, handler) { _ ->
-        call.application.environment.log.error(errors.joinToString())
-        call.respondHtml(HttpStatusCode.BadRequest) {
-            body {
-                ul {
-                    errors.forEach {
-                        li { +it }
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-```kotlin
-suspend fun PipelineContext<Unit, ApplicationCall>.requireValid(
-    auth: Auth, handler: suspend () -> Unit) {
-    requireValid(auth, handler) { errors ->
-        call.application.environment.log.error(errors.joinToString())
-        call.respondHtml(HttpStatusCode.BadRequest) {
-            body {
-                val lastErrorReason = auth.lastErrorReason
-                if (auth.isDebugActive && !lastErrorReason.isNullOrBlank()) {
-                    p { +lastErrorReason }
-                }
-                ul {
-                    errors.forEach {
-                        li { +it }
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-You can then use these error handlers like in the following example:
-
-```kotlin
-post<AttributeConsumerService> {
-    withSAMLAuth { auth ->
-        auth.processResponse()
-        requireValid(auth) {
-            if (!auth.isAuthenticated) {
-                call.respond(HttpStatusCode.BadRequest, "Not authenticated")
-            } else {
-                val nameId = auth.nameId
-                // ...
-            }
-        }
+        auth.login()
     }
 }
 ```
@@ -116,9 +90,9 @@ post<AttributeConsumerService> {
 
 ## Background & Alternatives
 - [OpenSAML](https://wiki.shibboleth.net/confluence/display/OpenSAML/Home)
-  reached end of life.
+  has reached end of life.
 - Custom implementation of Auth on top of
   [java-saml](https://github.com/onelogin/java-saml/tree/master/core) is
-  what should be done. But it is quite some work.
+  what should be done., but it is quite some work.
 - Please see https://github.com/ktorio/ktor/issues/1212 for more
-details.
+  details.
