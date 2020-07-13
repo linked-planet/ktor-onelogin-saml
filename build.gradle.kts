@@ -34,6 +34,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8", version = kotlinVersion))
     api(group = "io.ktor", name = "ktor-server-jetty", version = ktorVersion)
+    api(group = "io.ktor", name = "ktor-locations", version = ktorVersion)
+    api(group = "io.ktor", name = "ktor-html-builder", version = ktorVersion)
     api(group = "com.onelogin", name = "java-saml", version = "2.4.0")
 }
 
