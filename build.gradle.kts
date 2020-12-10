@@ -8,10 +8,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 println("Gradle Version: " + GradleVersion.current().toString())
 
 group = "com.link-time.ktor"
-version = "1.2.0-ktor-1.3.1"
+version = "1.2.0-ktor-1.4.2"
 
-val kotlinVersion = "1.3.72"
-val ktorVersion = "1.3.1"
+val kotlinVersion = "1.4.0"
+val ktorVersion = "1.4.2"
 val jvmTarget = "1.8"
 
 plugins {
