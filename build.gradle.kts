@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
 
-group = "com.linked-planet"
+group = "com.linked-planet.ktor"
 version = "1.2.0-ktor-1.4.2"
 
 val kotlinVersion = "1.4.0"
