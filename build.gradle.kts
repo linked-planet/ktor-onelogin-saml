@@ -142,10 +142,7 @@ tasks {
     }
 }
 
-tasks.register<Task>("deployNexus") {
-    dependsOn("closeRepository")
-        .dependsOn("uploadArchives")
-        .dependsOn("signMavenJavaPublication")
-        .dependsOn("signArchives")
-        .dependsOn("build")
-}
+tasks["closeRepository"].dependsOn("uploadArchives")
+tasks["uploadArchives"].mustRunAfter("signMavenJavaPublication")
+tasks["signMavenJavaPublication"].mustRunAfter("signArchives")
+tasks["signArchives"].mustRunAfter("build")
