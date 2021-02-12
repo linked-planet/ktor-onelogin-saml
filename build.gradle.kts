@@ -62,8 +62,8 @@ signing {
 // obtain passwords from gradle credentials plugin
 gradle.taskGraph.whenReady {
     if (allTasks.any {
-                it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
-            }) {
+            it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
+        }) {
         val credentials: CredentialsContainer by ext
         allprojects {
             extra["nexusPassword"] = credentials.getProperty("nexusToken")
@@ -116,6 +116,12 @@ nexus {
     // disable nexus plugin signing, because we sign by ourselves, so we can get the private key password prompt
     // instead of having to store the private key via credentials plugin
     sign = false
+}
+
+nexusStaging {
+    stagingProfileId = "21e9ad4c172f4"
+    delayBetweenRetriesInMillis = 12000
+    numberOfRetries = 30
 }
 
 tasks {
