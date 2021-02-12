@@ -1,6 +1,6 @@
 # ktor-onelogin-saml
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.link-time.ktor/ktor-onelogin-saml.svg?label=maven%20central)](https://search.maven.org/search?q=g:%22com.link-time.ktor%22%20AND%20a:%22ktor-onelogin-saml%22)
+[![Maven Central](https://img.shields.io/maven-central/v/com.linked-planet/ktor-onelogin-saml.svg?label=maven%20central)](https://search.maven.org/search?q=g:%22com.linked-planet%22%20AND%20a:%22ktor-onelogin-saml%22)
 ![Build Status](https://github.com/linked-planet/ktor-onelogin-saml/workflows/Gradle/badge.svg)
 [![GitHub License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 

@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
 
-group = "com.link-time.ktor"
+group = "com.linked-planet"
 version = "1.2.0-ktor-1.4.2"
 
 val kotlinVersion = "1.4.0"
@@ -78,7 +78,7 @@ modifyPom(closureOf<MavenPom> {
         withGroovyBuilder {
             "name"("Ktor OneLogin SAML Integration")
             "description"("Integrates Ktor with OneLogin java-saml library.")
-            "url"("https://github.com/link-time/ktor-onelogin-saml")
+            "url"("https://github.com/linked-planet/ktor-onelogin-saml")
             "inceptionYear"("2019")
             "licenses" {
                 "license" {
@@ -92,14 +92,14 @@ modifyPom(closureOf<MavenPom> {
                     "name"("Alexander Weickmann")
                     "email"("alexander.weickmann@gmail.com")
                     "url"("https://github.com/weickmanna")
-                    "organization"("link-time GmbH")
-                    "organizationUrl"("https://link-time.com")
+                    "organization"("linked-planet GmbH")
+                    "organizationUrl"("https://linked-planet.com")
                 }
             }
             "scm" {
-                "url"("https://github.com/link-time/ktor-onelogin-saml.git")
-                "connection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
-                "developerConnection"("scm:git:git://github.com/link-time/ktor-onelogin-saml.git")
+                "url"("https://github.com/linked-planet/ktor-onelogin-saml.git")
+                "connection"("scm:git:git://github.com/linked-planet/ktor-onelogin-saml.git")
+                "developerConnection"("scm:git:git://github.com/linked-planet/ktor-onelogin-saml.git")
             }
         }
     }
