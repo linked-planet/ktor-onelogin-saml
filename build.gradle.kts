@@ -56,6 +56,7 @@ publishing {
 
 signing {
     useGpgCmd()
+    sign(project.configurations[Dependency.ARCHIVES_CONFIGURATION])
     sign(publishing.publications["mavenJava"])
 }
 
@@ -141,4 +142,10 @@ tasks {
     }
 }
 
-tasks.getByName("uploadArchives").dependsOn("signMavenJavaPublication")
+tasks.register<Task>("deployNexus") {
+    dependsOn("closeRepository")
+        .dependsOn("uploadArchives")
+        .dependsOn("signMavenJavaPublication")
+        .dependsOn("signArchives")
+        .dependsOn("build")
+}
