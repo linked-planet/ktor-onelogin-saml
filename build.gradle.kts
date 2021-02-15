@@ -21,7 +21,6 @@ plugins {
     id("com.bmuschko.nexus") version "2.3.1"
     id("io.codearte.nexus-staging") version "0.21.2"
     id("nu.studer.credentials") version "2.1"
-    id("signing")
     `maven-publish`
 }
 
@@ -54,14 +53,14 @@ publishing {
     }
 }
 
-signing {
-    useGpgCmd()
-    sign(project.configurations[Dependency.ARCHIVES_CONFIGURATION])
-    sign(publishing.publications["mavenJava"])
-}
-
 // obtain passwords from gradle credentials plugin
 gradle.taskGraph.whenReady {
+    if (allTasks.any { it is Sign }) {
+        val credentials: CredentialsContainer by ext
+        allprojects {
+            extra["signing.password"] = credentials.getProperty("signingPassword")
+        }
+    }
     if (allTasks.any {
             it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
         }) {
@@ -113,12 +112,6 @@ extraArchive {
     javadoc = false
 }
 
-nexus {
-    // disable nexus plugin signing, because we sign by ourselves, so we can get the private key password prompt
-    // instead of having to store the private key via credentials plugin
-    sign = false
-}
-
 nexusStaging {
     stagingProfileId = "21e9ad4c172f4"
     delayBetweenRetriesInMillis = 12000
@@ -141,8 +134,3 @@ tasks {
         from("src/main/kotlin")
     }
 }
-
-tasks["closeRepository"].dependsOn("uploadArchives")
-tasks["uploadArchives"].mustRunAfter("signMavenJavaPublication")
-tasks["signMavenJavaPublication"].mustRunAfter("signArchives")
-tasks["signArchives"].mustRunAfter("build")
