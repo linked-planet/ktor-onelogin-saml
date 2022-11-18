@@ -37,7 +37,6 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
 
-// ability to publish artifact to maven local
 publishing {
     publications {
         create<MavenPublication>("ktor-onelogin-saml") {
@@ -71,6 +70,7 @@ publishing {
             }
             repositories {
                 mavenCentral()
+                mavenLocal()
             }
         }
     }
