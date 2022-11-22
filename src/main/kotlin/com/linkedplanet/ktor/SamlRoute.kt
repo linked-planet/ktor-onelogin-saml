@@ -21,25 +21,16 @@ package com.linkedplanet.ktor
 
 import com.onelogin.saml2.Auth
 import com.onelogin.saml2.settings.Saml2Settings
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.html.respondHtml
-import io.ktor.http.HttpStatusCode
-import io.ktor.locations.KtorExperimentalLocationsAPI
-import io.ktor.locations.Location
-import io.ktor.locations.get
-import io.ktor.locations.post
-import io.ktor.response.respond
-import io.ktor.response.respondRedirect
-import io.ktor.routing.Route
-import io.ktor.sessions.clear
-import io.ktor.sessions.sessions
-import io.ktor.sessions.set
-import io.ktor.util.pipeline.PipelineContext
-import kotlinx.html.body
-import kotlinx.html.li
-import kotlinx.html.p
-import kotlinx.html.ul
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.html.*
+import io.ktor.server.locations.*
+import io.ktor.server.locations.post
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+import io.ktor.util.pipeline.*
+import kotlinx.html.*
 
 
 const val SAMLEndpointBasePath: String = "/sso/saml"
@@ -58,10 +49,11 @@ class SingleLogoutService
 
 @Suppress("unused")
 @KtorExperimentalLocationsAPI
-inline fun <reified S> Route.saml(
-        samlEnabled: Boolean,
-        crossinline authorizer: (Auth) -> Boolean,
-        crossinline createSession: (String) -> S) {
+inline fun <reified S : Any> Route.saml(
+    samlEnabled: Boolean,
+    crossinline authorizer: (Auth) -> Boolean,
+    crossinline createSession: (String) -> S
+) {
 
     get<Metadata> {
         requireSAMLEnabled(samlEnabled) {
@@ -122,7 +114,10 @@ inline fun <reified S> Route.saml(
 }
 
 
-suspend fun PipelineContext<Unit, ApplicationCall>.requireSAMLEnabled(samlEnabled: Boolean, handler: suspend () -> Unit) {
+suspend fun PipelineContext<Unit, ApplicationCall>.requireSAMLEnabled(
+    samlEnabled: Boolean,
+    handler: suspend () -> Unit
+) {
     if (!samlEnabled) call.respond(HttpStatusCode.BadRequest) else handler()
 }
 

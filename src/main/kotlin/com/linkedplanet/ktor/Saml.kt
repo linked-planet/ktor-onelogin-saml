@@ -23,19 +23,14 @@
 package com.linkedplanet.ktor
 
 import com.onelogin.saml2.Auth
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.features.origin
-import io.ktor.routing.RoutingApplicationCall
-import io.ktor.server.engine.EngineAPI
-import io.ktor.server.servlet.AsyncServletApplicationCall
-import io.ktor.server.servlet.ServletApplicationResponse
-import io.ktor.util.pipeline.PipelineContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import io.ktor.server.application.*
+import io.ktor.server.plugins.*
+import io.ktor.server.routing.*
+import io.ktor.server.servlet.*
+import io.ktor.util.pipeline.*
+import kotlinx.coroutines.*
 import org.eclipse.jetty.server.Request
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.*
 
 suspend fun PipelineContext<Unit, ApplicationCall>.redirectToIdentityProvider() {
     withSAMLAuth { auth ->
@@ -50,7 +45,6 @@ suspend fun PipelineContext<Unit, ApplicationCall>.withSAMLAuth(handler: suspend
     handler(auth)
 }
 
-@OptIn(EngineAPI::class)
 fun ApplicationCall.getServletRequest(): HttpServletRequest {
     val servletRequest = getAsyncServletApplicationCall().request.servletRequest
     // when running behind proxy with ssl offloading, the request must be customized to use the original scheme
@@ -59,7 +53,6 @@ fun ApplicationCall.getServletRequest(): HttpServletRequest {
     return servletRequest
 }
 
-@OptIn(EngineAPI::class)
 fun ApplicationCall.getServletResponse(): HttpServletResponse {
     val servletApplicationResponse = getAsyncServletApplicationCall().response
     val responseField = ServletApplicationResponse::class.java.getDeclaredField("servletResponse")
@@ -67,7 +60,6 @@ fun ApplicationCall.getServletResponse(): HttpServletResponse {
     return responseField.get(servletApplicationResponse) as HttpServletResponse
 }
 
-@OptIn(EngineAPI::class)
 private fun ApplicationCall.getAsyncServletApplicationCall(): AsyncServletApplicationCall {
     val routingApplicationCall = (request.call as RoutingApplicationCall)
     val callField = RoutingApplicationCall::class.java.getDeclaredField("call")
@@ -82,9 +74,9 @@ suspend fun requireValid(auth: Auth, handler: suspend () -> Unit, respondErrors:
 }
 
 suspend fun requireValid(
-        errors: List<String>,
-        handler: suspend () -> Unit,
-        respondErrors: suspend (List<String>) -> Unit
+    errors: List<String>,
+    handler: suspend () -> Unit,
+    respondErrors: suspend (List<String>) -> Unit
 ) {
     if (errors.isEmpty()) handler() else respondErrors(errors)
 }
