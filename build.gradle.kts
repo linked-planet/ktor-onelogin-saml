@@ -81,7 +81,7 @@ signing {
     if (secretKey.isPresent && signingPassword.isPresent)
         useInMemoryPgpKeys(secretKey.get(), signingPassword.get())
 
-    sign(publishing.publications["ktor-onelogin-saml"])
+    sign(publishing.publications)
 }
 
 nexusPublishing {
