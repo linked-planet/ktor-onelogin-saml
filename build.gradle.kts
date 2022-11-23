@@ -18,6 +18,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.28.0"
     id("nu.studer.credentials") version "2.1"
     id("pl.allegro.tech.build.axion-release") version "1.13.6"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("signing")
     `maven-publish`
 }
@@ -59,7 +60,7 @@ publishing {
                 licenses {
                     license {
                         name.set("The Apache Software License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                         distribution.set("repo")
                     }
                 }
@@ -78,23 +79,24 @@ publishing {
                     developerConnection.set("scm:git:git://github.com/linked-planet/ktor-onelogin-saml.git")
                 }
             }
-            repositories {
-                maven {
-                    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/")
-                    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                    url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-                    credentials {
-                        val usernameEnv = providers.environmentVariable("SONATYPE_USERNAME")
-                        val passwordEnv = providers.environmentVariable("SONATYPE_PASSWORD")
-                        if (usernameEnv.isPresent && passwordEnv.isPresent) {
-                            username = usernameEnv.get()
-                            password = passwordEnv.get()
-                        }
-                    }
-                }
-
-            }
         }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
+
+// do not generate extra load on Nexus with new staging repository if signing fails
+val initializeSonatypeStagingRepository by tasks.existing
+subprojects {
+    initializeSonatypeStagingRepository {
+        shouldRunAfter(tasks.withType<Sign>())
     }
 }
 
