@@ -40,6 +40,15 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
 
+signing {
+    useInMemoryPgpKeys(
+        findProperty("signingKey").toString(),
+        findProperty("signingPassword").toString()
+    )
+
+    sign(publishing.publications)
+}
+
 publishing {
     publications {
         create<MavenPublication>("ktor-onelogin-saml") {
@@ -73,15 +82,6 @@ publishing {
             }
         }
     }
-}
-
-signing {
-    val secretKey = providers.environmentVariable("SIGNING_KEY")
-    val signingPassword = providers.environmentVariable("SIGNING_PASSWORD")
-    if (secretKey.isPresent && signingPassword.isPresent)
-        useInMemoryPgpKeys(secretKey.get(), signingPassword.get())
-
-    sign(publishing.publications)
 }
 
 nexusPublishing {
