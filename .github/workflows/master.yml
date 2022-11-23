@@ -1,0 +1,50 @@
+name: UI-Kit master
+on:
+  push:
+    branches: [ master ]
+  release:
+    types: [ created ]
+
+jobs:
+  master:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-ui-kit-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-ktor-onelogin-saml-
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Check License
+        run: ./gradlew license
+
+      - name: Build and test Library
+        run: ./gradlew build --info
+
+      - name: Publish Library to Maven Central
+        run: ./gradlew publish
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+
+      - name: Create Showcase distribution
+        run: ./gradlew browserDistribution
+
+      - name: Deploy Showcase to Github Pages
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: docs
+          folder: ui-kit-showcase/build/distributions
+          single-commit: true

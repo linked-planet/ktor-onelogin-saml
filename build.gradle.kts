@@ -17,6 +17,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("nu.studer.credentials") version "2.1"
+    id("signing")
     `maven-publish`
 }
 
@@ -35,6 +36,11 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = jvmTarget
     kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+}
+
+signing {
+    sign(publishing.publications)
+    useInMemoryPgpKeys(System.getenv("SIGNING_KEY"), System.getenv("SIGNING_PASSWORD"))
 }
 
 publishing {
@@ -69,27 +75,17 @@ publishing {
                 }
             }
             repositories {
-                mavenCentral()
-                mavenLocal()
-            }
-        }
-    }
-}
+                maven {
+                    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/")
+                    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                    url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                    credentials {
+                        username = System.getenv("SONATYPE_USERNAME")
+                        password = System.getenv("SONATYPE_PASSWORD")
+                    }
+                }
 
-// obtain passwords from gradle credentials plugin
-gradle.taskGraph.whenReady {
-    if (allTasks.any { it is Sign }) {
-        val credentials: CredentialsContainer by ext
-        allprojects {
-            extra["signing.password"] = credentials.getProperty("signingPassword")
-        }
-    }
-    if (allTasks.any {
-            it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
-        }) {
-        val credentials: CredentialsContainer by ext
-        allprojects {
-            extra["nexusPassword"] = credentials.getProperty("nexusToken")
+            }
         }
     }
 }
