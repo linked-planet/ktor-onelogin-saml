@@ -1,5 +1,6 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.utils.`is`
 
 // print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
@@ -82,8 +83,12 @@ publishing {
                     val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
                     url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
                     credentials {
-                        username = providers.environmentVariable("SONATYPE_USERNAME").get()
-                        password = providers.environmentVariable("SONATYPE_PASSWORD").get()
+                        val usernameEnv = providers.environmentVariable("SONATYPE_USERNAME")
+                        val passwordEnv = providers.environmentVariable("SONATYPE_PASSWORD")
+                        if (usernameEnv.isPresent && passwordEnv.isPresent) {
+                            username = usernameEnv.get()
+                            password = passwordEnv.get()
+                        }
                     }
                 }
 
