@@ -1,4 +1,3 @@
-import nu.studer.gradle.credentials.domain.CredentialsContainer
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -40,7 +39,10 @@ tasks.withType<KotlinCompile> {
 
 signing {
     sign(publishing.publications)
-    useInMemoryPgpKeys(System.getenv("SIGNING_KEY"), System.getenv("SIGNING_PASSWORD"))
+    val secretKey = providers.environmentVariable("SIGNING_KEY")
+    val signingPassword = providers.environmentVariable("SIGNING_PASSWORD")
+    if (secretKey.isPresent && signingPassword.isPresent)
+        useInMemoryPgpKeys(secretKey.get(), signingPassword.get())
 }
 
 publishing {
