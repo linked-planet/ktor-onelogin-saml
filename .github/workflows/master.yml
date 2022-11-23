@@ -1,9 +1,9 @@
-name: UI-Kit master
+name: ktor-onelogin-saml master
 on:
   push:
     branches: [ master, maintenance/dependency-update ]
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   master:
@@ -16,7 +16,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-ui-kit-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-ktor-onelogin-saml-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-ktor-onelogin-saml-
       - name: Set up JDK 11
@@ -38,13 +38,3 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-
-      - name: Create Showcase distribution
-        run: ./gradlew browserDistribution
-
-      - name: Deploy Showcase to Github Pages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
-        with:
-          branch: docs
-          folder: ui-kit-showcase/build/distributions
-          single-commit: true
