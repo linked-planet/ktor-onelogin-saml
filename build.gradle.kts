@@ -4,8 +4,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
 
+val libraryVersion = scmVersion.version
 group = "com.linked-planet"
-version = "1.2.1-ktor-2.1.3-SNAPSHOT"
+version = libraryVersion
 
 val kotlinVersion = "1.7.21"
 val ktorVersion = "2.1.3"
@@ -16,6 +17,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("nu.studer.credentials") version "2.1"
+    id("pl.allegro.tech.build.axion-release") version "1.13.6"
     id("signing")
     `maven-publish`
 }
