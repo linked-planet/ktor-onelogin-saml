@@ -1,12 +1,11 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.utils.`is`
 
 // print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
 
 group = "com.linked-planet.ktor"
-version = "1.2.1-ktor-2.1.3"
+version = "1.2.1-ktor-2.1.3-SNAPSHOT"
 
 val kotlinVersion = "1.7.21"
 val ktorVersion = "2.1.3"
