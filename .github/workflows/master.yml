@@ -25,9 +25,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Check License
-        run: ./gradlew license
-
       - name: Build and test Library
         run: ./gradlew build --info
 
