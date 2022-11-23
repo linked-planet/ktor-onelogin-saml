@@ -1,7 +1,7 @@
 name: UI-Kit master
 on:
   push:
-    branches: [ master ]
+    branches: [ master, maintenance/dependency-update ]
   release:
     types: [ created ]
 
