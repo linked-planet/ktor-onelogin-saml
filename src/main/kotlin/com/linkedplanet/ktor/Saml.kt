@@ -42,6 +42,7 @@ suspend fun PipelineContext<Unit, ApplicationCall>.redirectToIdentityProvider() 
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withSAMLAuth(handler: suspend (Auth) -> Unit) {
     val auth = Auth(SamlConfig.saml2Settings, call.getServletRequest(), call.getServletResponse())
+    call
     handler(auth)
 }
 

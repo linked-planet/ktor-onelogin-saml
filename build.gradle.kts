@@ -1,12 +1,12 @@
-import nu.studer.gradle.credentials.domain.CredentialsContainer
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // print gradle version as we might run on different machines as well as in the cloud
 println("Gradle Version: " + GradleVersion.current().toString())
 
-group = "com.linked-planet.ktor"
-version = "1.2.1-ktor-2.1.3"
+val libraryVersion = scmVersion.version
+group = "com.linked-planet"
+version = libraryVersion
 
 val kotlinVersion = "1.7.21"
 val ktorVersion = "2.1.3"
@@ -17,6 +17,9 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("nu.studer.credentials") version "2.1"
+    id("pl.allegro.tech.build.axion-release") version "1.13.6"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("signing")
     `maven-publish`
 }
 
@@ -37,6 +40,15 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
 
+signing {
+    useInMemoryPgpKeys(
+        findProperty("signingKey").toString(),
+        findProperty("signingPassword").toString()
+    )
+
+    sign(publishing.publications)
+}
+
 publishing {
     publications {
         create<MavenPublication>("ktor-onelogin-saml") {
@@ -49,7 +61,7 @@ publishing {
                 licenses {
                     license {
                         name.set("The Apache Software License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
                         distribution.set("repo")
                     }
                 }
@@ -68,30 +80,23 @@ publishing {
                     developerConnection.set("scm:git:git://github.com/linked-planet/ktor-onelogin-saml.git")
                 }
             }
-            repositories {
-                mavenCentral()
-                mavenLocal()
-            }
         }
     }
 }
 
-// obtain passwords from gradle credentials plugin
-gradle.taskGraph.whenReady {
-    if (allTasks.any { it is Sign }) {
-        val credentials: CredentialsContainer by ext
-        allprojects {
-            extra["signing.password"] = credentials.getProperty("signingPassword")
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
     }
-    if (allTasks.any {
-            it.name in setOf("uploadArchives", "closeRepository", "releaseRepository", "closeAndReleaseRepository")
-        }) {
-        val credentials: CredentialsContainer by ext
-        allprojects {
-            extra["nexusPassword"] = credentials.getProperty("nexusToken")
-        }
-    }
+}
+
+// do not generate extra load on Nexus with new staging repository if signing fails
+val initializeSonatypeStagingRepository by tasks.existing
+initializeSonatypeStagingRepository {
+    shouldRunAfter(tasks.withType<Sign>())
 }
 
 tasks {
