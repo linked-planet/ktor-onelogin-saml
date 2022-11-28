@@ -17,7 +17,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.ben-manes.versions") version "0.28.0"
     id("nu.studer.credentials") version "2.1"
-    id("pl.allegro.tech.build.axion-release") version "1.13.6"
+    id("pl.allegro.tech.build.axion-release") version "1.14.2"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("signing")
     `maven-publish`
