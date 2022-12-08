@@ -49,9 +49,15 @@ signing {
     sign(publishing.publications)
 }
 
+
 tasks {
+    register("dokkaJavadoc", DokkaTask::class) {
+        outputFormat = "javadoc"
+        outputDirectory = "$buildDir/javadoc"
+        configuration.reportUndocumented = false
+    }
     register("javadocJar", Jar::class) {
-        dependsOn("dokkaHtml")
+        dependsOn("dokkaJavadoc")
         archiveClassifier.set("javadoc")
         from("$buildDir/javadoc")
     }
@@ -112,21 +118,4 @@ nexusPublishing {
 val initializeSonatypeStagingRepository by tasks.existing
 initializeSonatypeStagingRepository {
     shouldRunAfter(tasks.withType<Sign>())
-}
-
-tasks {
-    register("dokkaJavadoc", DokkaTask::class) {
-        outputFormat = "javadoc"
-        outputDirectory = "$buildDir/javadoc"
-        configuration.reportUndocumented = false
-    }
-    register("javadocJar", Jar::class) {
-        dependsOn("dokkaJavadoc")
-        archiveClassifier.set("javadoc")
-        from("$buildDir/javadoc")
-    }
-    register("sourcesJar", Jar::class) {
-        archiveClassifier.set("sources")
-        from("src/main/kotlin")
-    }
 }
