@@ -49,11 +49,23 @@ signing {
     sign(publishing.publications)
 }
 
+tasks {
+    register("javadocJar", Jar::class) {
+        dependsOn("dokkaHtml")
+        archiveClassifier.set("javadoc")
+        from("$buildDir/javadoc")
+    }
+    register("sourcesJar", Jar::class) {
+        archiveClassifier.set("sources")
+        from("src/main/kotlin")
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("ktor-onelogin-saml") {
             from(components["kotlin"])
-            //artifact(tasks.getByName<Zip>("javadocJar"))
+            artifact(tasks.getByName<Zip>("javadocJar"))
             artifact(tasks.getByName<Zip>("sourcesJar"))
 
             pom {
