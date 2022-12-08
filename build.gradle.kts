@@ -51,7 +51,13 @@ signing {
 
 
 tasks {
+//    register("dokkaJavadoc", DokkaTask::class) {
+//        outputFormat = "javadoc"
+//        outputDirectory = "$buildDir/javadoc"
+//        configuration.reportUndocumented = false
+//    }
     register("javadocJar", Jar::class) {
+//        dependsOn("dokkaJavadoc")
         archiveClassifier.set("javadoc")
         from("$buildDir/javadoc")
     }
@@ -65,7 +71,7 @@ publishing {
     publications {
         create<MavenPublication>("ktor-onelogin-saml") {
             from(components["kotlin"])
-            //artifact(tasks.getByName<Zip>("javadocJar"))
+            artifact(tasks.getByName<Zip>("javadocJar"))
             artifact(tasks.getByName<Zip>("sourcesJar"))
 
             pom {
