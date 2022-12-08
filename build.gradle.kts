@@ -53,7 +53,7 @@ publishing {
     publications {
         create<MavenPublication>("ktor-onelogin-saml") {
             from(components["kotlin"])
-            artifact(tasks.getByName<Zip>("javadocJar"))
+            //artifact(tasks.getByName<Zip>("javadocJar"))
             artifact(tasks.getByName<Zip>("sourcesJar"))
 
             pom {
