@@ -51,11 +51,6 @@ signing {
 
 
 tasks {
-    register("dokkaJavadoc", DokkaTask::class) {
-        outputFormat = "javadoc"
-        outputDirectory = "$buildDir/javadoc"
-        configuration.reportUndocumented = false
-    }
     register("javadocJar", Jar::class) {
         dependsOn("dokkaJavadoc")
         archiveClassifier.set("javadoc")
