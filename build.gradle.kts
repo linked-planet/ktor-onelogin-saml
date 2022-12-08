@@ -52,7 +52,7 @@ signing {
 
 tasks {
     register("javadocJar", Jar::class) {
-        dependsOn("dokkaJavadoc")
+        dependsOn("dokkaHtml")
         archiveClassifier.set("javadoc")
         from("$buildDir/javadoc")
     }
