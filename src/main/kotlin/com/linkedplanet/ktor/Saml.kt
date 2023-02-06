@@ -62,9 +62,7 @@ fun ApplicationCall.getServletResponse(): HttpServletResponse {
 
 private fun ApplicationCall.getAsyncServletApplicationCall(): AsyncServletApplicationCall {
     val routingApplicationCall = (request.call as RoutingApplicationCall)
-    val callField = RoutingApplicationCall::class.java.getDeclaredField("call")
-    callField.isAccessible = true
-    return callField.get(routingApplicationCall) as AsyncServletApplicationCall
+    return routingApplicationCall.engineCall as AsyncServletApplicationCall
 }
 
 
