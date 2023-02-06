@@ -1,11 +1,5 @@
 println("Gradle Version: " + GradleVersion.current().toString())
 
-group = "com.linked-planet"
-version = scmVersion.version
-
-val kotlinVersion = "1.8.10"
-val ktorVersion = "2.2.3"
-
 plugins {
     kotlin("jvm") version "1.8.10"
 
@@ -28,16 +22,22 @@ java {
     }
 }
 
+group = "com.linked-planet"
+version = scmVersion.version
+
 repositories {
     mavenCentral()
 }
 
+val kotlinVersion = "1.8.10"
+val ktorVersion = "2.2.3"
+val oneloginVersion = "2.9.0"
 dependencies {
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     api("io.ktor", "ktor-server-jetty", ktorVersion)
     api("io.ktor", "ktor-server-locations", ktorVersion)
     api("io.ktor", "ktor-server-html-builder", ktorVersion)
-    api("com.onelogin", "java-saml", "2.9.0")
+    api("com.onelogin", "java-saml", oneloginVersion)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
