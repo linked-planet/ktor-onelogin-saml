@@ -71,8 +71,6 @@ publishing {
         create<MavenPublication>("ktor-onelogin-saml") {
             from(components["kotlin"])
 
-            version = scmVersion.version
-
             artifact(tasks.getByName<Zip>("javadocJar"))
             artifact(tasks.getByName<Zip>("sourcesJar"))
 
