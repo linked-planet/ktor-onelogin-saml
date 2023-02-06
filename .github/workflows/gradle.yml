@@ -1,26 +1,45 @@
 name: Gradle
 
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
+  release:
+    types: [ published ]
 
 jobs:
-  build:
+
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout Source
+        uses: actions/checkout@v3
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
+      - name: Download Cache
+        uses: actions/cache@v3
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-cache-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-cache-
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.8
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Gradle Build
+        run: ./gradlew build --info
+
+      # if currently building a branch we do not want to publish as release, it's going to be a snapshot version anyway
+      # -> simplify the process by just always publishing to sonatype
+      - name: Publish to Sonatype
+        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
