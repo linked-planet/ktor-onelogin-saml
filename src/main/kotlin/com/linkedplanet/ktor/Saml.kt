@@ -2,7 +2,7 @@
  * #%L
  * ktor-onelogin-saml
  * %%
- * Copyright (C) 2021 linked-planet GmbH
+ * Copyright (C) 2022 linked-planet GmbH
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
  * limitations under the License.
  * #L%
  */
-
 @file:Suppress("unused")
 
 package com.linkedplanet.ktor
@@ -63,9 +62,7 @@ fun ApplicationCall.getServletResponse(): HttpServletResponse {
 
 private fun ApplicationCall.getAsyncServletApplicationCall(): AsyncServletApplicationCall {
     val routingApplicationCall = (request.call as RoutingApplicationCall)
-    val callField = RoutingApplicationCall::class.java.getDeclaredField("call")
-    callField.isAccessible = true
-    return callField.get(routingApplicationCall) as AsyncServletApplicationCall
+    return routingApplicationCall.engineCall as AsyncServletApplicationCall
 }
 
 
