@@ -9,9 +9,6 @@ val ktorVersion = "2.2.3"
 plugins {
     kotlin("jvm") version "1.8.10"
 
-    // misc
-    id("nu.studer.credentials") version "3.0"
-
     // derive gradle version from git tag
     id("pl.allegro.tech.build.axion-release") version "1.14.3"
 
